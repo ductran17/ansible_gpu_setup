@@ -1,0 +1,85 @@
+- name: "cudnn | Decide install path"
+  set_fact:
+    _cudnn_mode: "{{ cudnn_install_mode | default('package') }}"
+
+- name: "cudnn | Install (DEB) via apt"
+  apt:
+    name: "{{ cudnn_deb_packages | default(['libcudnn9-cuda-12','libcudnn9-dev-cuda-12']) }}"
+    state: present
+    update_cache: yes
+  when: _cudnn_mode == 'package' and ansible_os_family == 'Debian'
+
+- name: "cudnn | Install (RPM) via dnf"
+  dnf:
+    name: "{{ cudnn_rpm_packages | default(['libcudnn9-cuda-12','libcudnn9-devel-cuda-12']) }}"
+    state: present
+  when: _cudnn_mode == 'package' and ansible_os_family == 'RedHat'
+
+- name: "cudnn | Fail if tarball not provided"
+  fail:
+    msg: "Bạn chọn cudnn_install_mode=tarball nhưng chưa chỉ định cudnn_tarball (đặt file trong roles/cudnn/files/)."
+  when: _cudnn_mode == 'tarball' and (cudnn_tarball | default('') | length) == 0
+
+- name: "cudnn | Copy tarball to /tmp"
+  copy:
+    src: "{{ cudnn_tarball }}"
+    dest: "/tmp/{{ cudnn_tarball | basename }}"
+    mode: "0644"
+  when: _cudnn_mode == 'tarball'
+
+- name: "cudnn | Extract tarball"
+  unarchive:
+    src: "/tmp/{{ cudnn_tarball | basename }}"
+    dest: "/tmp/cudnn_extract"
+    remote_src: true
+    creates: "/tmp/cudnn_extract/include/cudnn.h"
+  when: _cudnn_mode == 'tarball'
+
+- name: "cudnn | Install headers & libs into /usr/local/cuda-{{ cuda_version_major_minor }}"
+  copy:
+    src: "/tmp/cudnn_extract/"
+    dest: "/usr/local/cuda-{{ cuda_version_major_minor }}/"
+    owner: root
+    group: root
+    mode: preserve
+  when: _cudnn_mode == 'tarball'
+  notify: run_ldconfig
+
+- name: "cudnn | Install offline DEBs"
+  apt:
+    deb: "{{ item.path }}"
+    state: present
+  with_fileglob:
+    - "{{ role_path }}/files/*.deb"
+  when: _cudnn_mode == 'offline_pkgs' and ansible_os_family == 'Debian'
+
+- name: "cudnn | Install offline RPMs"
+  yum:
+    name: "{{ item.path }}"
+    state: present
+  with_fileglob:
+    - "{{ role_path }}/files/*.rpm"
+  when: _cudnn_mode == 'offline_pkgs' and ansible_os_family == 'RedHat'
+
+- name: "cudnn | Check header presence"
+  stat:
+    path: "/usr/local/cuda-{{ cuda_version_major_minor }}/include/cudnn.h"
+  register: cudnn_header
+
+- name: "cudnn | Assert header exists"
+  assert:
+    that:
+      - cudnn_header.stat.exists
+    fail_msg: "Không tìm thấy cudnn.h sau khi cài cuDNN."
+
+- name: "cudnn | Try locate libcudnn.*"
+  shell: "ldconfig -p | grep -i libcudnn || true"
+  register: cudnn_ldconfig
+  changed_when: false
+
+- name: "cudnn | Show libcudnn presence"
+  debug:
+    msg: "{{ cudnn_ldconfig.stdout | default('libcudnn not found in ldconfig cache') }}"
+
+- name: "cudnn | Ensure ldconfig cache up to date"
+  meta: flush_handlers

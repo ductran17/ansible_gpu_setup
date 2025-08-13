@@ -1,0 +1,40 @@
+- name: Detect NVIDIA GPU
+  command: lspci
+  register: lspci_out
+  changed_when: false
+
+# - name: Fail if no NVIDIA GPU
+#   assert:
+#     that: "'NVIDIA' in lspci_out.stdout"
+#     fail_msg: "Không phát hiện NVIDIA GPU."
+
+- name: Set has_gpus fact #Test không có GPU
+  set_fact:
+    has_gpus: "{{ ('NVIDIA' in (lspci_out.stdout | default(''))) and not (ci_no_gpu | default(false)) }}"
+
+- name: Fail if no NVIDIA GPU (unless ci_no_gpu=true)
+  assert:
+    that: "has_gpus"
+    fail_msg: "Không phát hiện NVIDIA GPU (đặt -e ci_no_gpu=true nếu đang chạy CI không có GPU)."
+  when: not (ci_no_gpu | default(false))
+
+- name: Kernel headers/dev (Debian/Ubuntu)
+  apt:
+    name:
+      - "linux-headers-{{ ansible_kernel }}"
+      - dkms
+      - build-essential
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Kernel headers/dev (RHEL/Rocky/Alma)
+  dnf:
+    name:
+      - "kernel-devel-{{ ansible_kernel }}"
+      - kernel-headers
+      - dkms
+      - gcc
+      - make
+    state: present
+  when: ansible_os_family == "RedHat"

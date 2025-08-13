@@ -1,0 +1,41 @@
+# ONLINE (repo NVIDIA)
+- name: (ONLINE) Install CUDA Toolkit on Debian/Ubuntu
+  apt:
+    name: "{{ cuda_toolkit_pkg_override | default('cuda-toolkit-' ~ target_toolkit_major ~ '-0') }}"
+    state: present
+    update_cache: yes
+  when: cuda_install_mode == "online" and ansible_os_family == "Debian"
+
+- name: (ONLINE) Install CUDA Toolkit on RHEL family
+  dnf:
+    name: "{{ cuda_toolkit_pkg_override | default('cuda-toolkit') }}"
+    state: present
+  when: cuda_install_mode == "online" and ansible_os_family == "RedHat"
+
+# OFFLINE (.run toolkit-only)
+- name: Ensure /opt/cuda exists
+  file:
+    path: /opt/cuda
+    state: directory
+    mode: "0755"
+  when: cuda_install_mode == "offline"
+
+- name: Copy runfile
+  copy:
+    src: "{{ cuda_runfile }}"
+    dest: "/opt/cuda/{{ cuda_runfile }}"
+    mode: "0755"
+  when: cuda_install_mode == "offline"
+
+- name: (OFFLINE) Install toolkit silent
+  command: "sh /opt/cuda/{{ cuda_runfile }} --silent --toolkit"
+  args:
+    creates: "/usr/local/cuda-{{ cuda_version_major_minor }}/bin/nvcc"
+  when: cuda_install_mode == "offline"
+
+- name: Symlink /usr/local/cuda → version
+  file:
+    src: "/usr/local/cuda-{{ cuda_version_major_minor }}"
+    dest: "/usr/local/cuda"
+    state: link
+  when: cuda_install_mode == "offline"

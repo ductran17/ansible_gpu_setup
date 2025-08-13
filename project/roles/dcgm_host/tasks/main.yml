@@ -1,0 +1,169 @@
+# DCGM host install: package | offline_pkgs | none
+- name: "dcgm | Decide install mode"
+  set_fact:
+    _dcgm_mode: "{{ dcgm_install_mode | default('package') }}"
+
+# Ubuntu/Debian: ensure CUDA keyring (online mode)
+- name: "Ubuntu | remove old key (legacy)"
+  apt_key:
+    id: "{{ old_nvidia_driver_ubuntu_cuda_repo_gpgkey_id }}"
+    state: "absent"
+  when: _dcgm_mode == 'package' and ansible_os_family == 'Debian' and old_nvidia_driver_ubuntu_cuda_repo_gpgkey_id is defined
+
+- name: "Ubuntu | install CUDA keyring"
+  apt:
+    deb: "{{ nvidia_cuda_keyring_url }}"
+    state: "present"
+  environment: "{{ proxy_env if proxy_env is defined else {} }}"
+  when: _dcgm_mode == 'package' and ansible_os_family == 'Debian'
+
+- name: "Ubuntu | force apt update"
+  apt:
+    update_cache: true
+  environment: "{{ proxy_env if proxy_env is defined else {} }}"
+  changed_when: false
+  when: _dcgm_mode == 'package' and ansible_os_family == 'Debian'
+
+# Install DCGM via package manager
+- name: "dcgm | Install (Debian/Ubuntu)"
+  apt:
+    name: "{{ dcgm_pkg_name | default('datacenter-gpu-manager') }}"
+    state: present
+  when: _dcgm_mode == 'package' and ansible_os_family == 'Debian'
+
+- name: "dcgm | Install (RHEL family)"
+  dnf:
+    name: "{{ dcgm_pkg_name | default('datacenter-gpu-manager') }}"
+    state: present
+  when: _dcgm_mode == 'package' and ansible_os_family == 'RedHat'
+
+# Offline packages mode: install all .deb/.rpm placed in files/
+- name: "dcgm | Install offline DEBs"
+  apt:
+    deb: "{{ item.path }}"
+    state: present
+  with_fileglob:
+    - "{{ role_path }}/files/*.deb"
+  when: _dcgm_mode == 'offline_pkgs' and ansible_os_family == 'Debian'
+
+- name: "dcgm | Install offline RPMs"
+  yum:
+    name: "{{ item.path }}"
+    state: present
+  with_fileglob:
+    - "{{ role_path }}/files/*.rpm"
+  when: _dcgm_mode == 'offline_pkgs' and ansible_os_family == 'RedHat'
+
+# Try manage packaged service if exists
+- name: "dcgm | Try manage nvidia-dcgm service if present"
+  service:
+    name: "nvidia-dcgm"
+    state: started
+    enabled: true
+  register: dcgm_service_try
+  failed_when: false
+  when: _dcgm_mode != 'none' and has_gpus | default(false)
+
+# Fallback systemd unit for nv-hostengine
+- name: "dcgm | Create nv-hostengine systemd unit (fallback)"
+  copy:
+    dest: /etc/systemd/system/nv-hostengine.service
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=NVIDIA DCGM Host Engine
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/bin/nv-hostengine -n
+      Restart=on-failure
+
+      [Install]
+      WantedBy=multi-user.target
+  when: _dcgm_mode != 'none' and (dcgm_service_try is failed or dcgm_service_try is skipped) and has_gpus | default(false)
+
+- name: "dcgm | Enable & start nv-hostengine (fallback unit)"
+  systemd:
+    name: nv-hostengine
+    state: started
+    enabled: true
+    daemon_reload: true
+  when: _dcgm_mode != 'none' and (dcgm_service_try is failed or dcgm_service_try is skipped) and has_gpus | default(false)
+
+# Verify when GPU present
+- name: "dcgm | Verify hostengine responds (dcgmi)"
+  command: "dcgmi discovery -l"
+  register: dcgmi_out
+  changed_when: false
+  failed_when: false
+  when: has_gpus | default(false)
+
+- debug:
+    var: dcgmi_out.stdout
+  when: dcgmi_out is defined
+
+# - name: "dcgm | Decide install mode"
+#   set_fact:
+#     _dcgm_mode: "{{ dcgm_install_mode | default('package') }}"
+
+# - name: "dcgm | Install (Debian/Ubuntu)"
+#   apt:
+#     name: ["datacenter-gpu-manager"]
+#     state: present
+#     update_cache: yes
+#   when: _dcgm_mode == 'package' and ansible_os_family == 'Debian'
+
+# - name: "dcgm | Install (RHEL family)"
+#   dnf:
+#     name: ["datacenter-gpu-manager"]
+#     state: present
+#   when: _dcgm_mode == 'package' and ansible_os_family == 'RedHat'
+
+# - name: "dcgm | Try manage nvidia-dcgm service if present"
+#   service:
+#     name: "nvidia-dcgm"
+#     state: started
+#     enabled: true
+#   register: dcgm_service_try
+#   failed_when: false
+#   when: _dcgm_mode != 'none'
+
+# - name: "dcgm | Create nv-hostengine systemd unit (fallback)"
+#   copy:
+#     dest: /etc/systemd/system/nv-hostengine.service
+#     mode: "0644"
+#     content: |
+#       [Unit]
+#       Description=NVIDIA DCGM Host Engine
+#       After=network-online.target
+#       Wants=network-online.target
+
+#       [Service]
+#       Type=simple
+#       ExecStart=/usr/bin/nv-hostengine -n
+#       Restart=on-failure
+
+#       [Install]
+#       WantedBy=multi-user.target
+#   when: _dcgm_mode != 'none' and (dcgm_service_try is failed or dcgm_service_try is skipped)
+
+# - name: "dcgm | Enable & start nv-hostengine (fallback unit)"
+#   systemd:
+#     name: nv-hostengine
+#     state: started
+#     enabled: true
+#     daemon_reload: true
+#   when: _dcgm_mode != 'none' and (dcgm_service_try is failed or dcgm_service_try is skipped)
+
+# - name: "dcgm | Verify hostengine responds (dcgmi)"
+#   command: "dcgmi discovery -l"
+#   register: dcgmi_out
+#   changed_when: false
+#   failed_when: false
+#   when: not (ci_no_gpu | default(false))
+
+# - debug:
+#     var: dcgmi_out.stdout
+#   when: dcgmi_out is defined

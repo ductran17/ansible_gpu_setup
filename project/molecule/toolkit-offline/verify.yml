@@ -1,0 +1,11 @@
+- hosts: all
+  gather_facts: false
+  tasks:
+    - name: nvcc should be present and executable
+      command: /usr/local/cuda/bin/nvcc --version
+      register: nvccv
+      changed_when: false
+    - name: assert nvcc version output contains 13.0
+      assert:
+        that:
+          - "'release 13.0' in nvccv.stdout"

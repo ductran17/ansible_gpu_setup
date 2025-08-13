@@ -1,0 +1,4 @@
+---
+collections:
+  - name: nvidia.nvidia_driver
+  - name: community.general

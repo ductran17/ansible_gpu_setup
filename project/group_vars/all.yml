@@ -1,0 +1,46 @@
+# Online | Offline
+cuda_install_mode: "offline"
+cuda_toolkit_pkg_override: ""
+cuda_version_major_minor: "13.0"
+cuda_runfile: "cuda_13.0.0_linux.run"
+
+# Driver
+desired_driver_branch: ""          # rỗng = dùng min theo matrix
+enable_mig: false
+
+# ---- cuDNN ----
+# package | tarball | offline_pkgs
+cudnn_install_mode: "package"
+cudnn_deb_packages: ["libcudnn9-cuda-12", "libcudnn9-dev-cuda-12"]
+cudnn_rpm_packages: ["libcudnn9-cuda-12", "libcudnn9-devel-cuda-12"]
+cudnn_tarball: ""                  # nếu tarball: đặt file vào roles/cudnn/files/
+
+# ---- DCGM (host) ----
+dcgm_install_mode: "package"       # package | offline_pkgs | none
+
+# ---- dcgm-exporter ----
+dcgm_exporter_mode: "container"    # container | binary | none
+dcgm_exporter_image: "nvcr.io/nvidia/k8s/dcgm-exporter:latest"
+dcgm_exporter_port: 9400
+
+# CI không có GPU
+ci_no_gpu: false
+
+# ---- DeepOps-like repo & exporter settings ----
+# Ubuntu CUDA repo keyring URL (override per distro)
+nvidia_cuda_keyring_url: "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb"
+# Legacy GPG key (nếu còn)
+old_nvidia_driver_ubuntu_cuda_repo_gpgkey_id: "7FA2AF80"
+
+# DCGM package name (có repo dùng datacenter-gpu-manager-4-cuda<MAJOR>)
+dcgm_pkg_name: "datacenter-gpu-manager"
+
+# Prometheus/file_sd & exporter config
+prometheus_config_dir: "/etc/prometheus"
+prometheus_cfg_endpoint_dir: "/etc/prometheus/file_sd"
+nvidia_dcgm_exporter_conf_template: "templates/dcgm-exporter.yml.j2"
+nvidia_dcgm_container_config_dir: "/etc/dcgm-exporter"
+nvidia_dcgm_container_custom_metrics_file: "dcgm_metrics.csv"
+nvidia_dcgm_svc_name: "dcgm-exporter.service"
+nvidia_dcgm_state: "started"
+nvidia_dcgm_enabled: true

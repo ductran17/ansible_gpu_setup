@@ -1,0 +1,20 @@
+
+- name: Install NVIDIA driver (meets min branch)
+  import_role:
+    name: nvidia.nvidia_driver
+  vars:
+    nvidia_driver_branch: "{{ chosen_driver_branch }}"
+
+- name: Check installed driver version
+  command: nvidia-smi --query-gpu=driver_version --format=csv,noheader
+  register: smi_after
+  changed_when: false
+
+- set_fact:
+    installed_driver_version: "{{ (smi_after.stdout_lines | first | default('0')) }}"
+
+- name: Assert installed driver >= required branch
+  assert:
+    that:
+      - "(installed_driver_version.split('.')[0] | int) >= (min_driver_branch_required | int)"
+    fail_msg: "Driver {{ installed_driver_version }} < yêu cầu r{{ min_driver_branch_required }} cho CUDA {{ target_toolkit_major }}"

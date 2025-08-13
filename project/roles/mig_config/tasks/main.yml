@@ -1,0 +1,7 @@
+- name: Enable MIG (if supported)
+  shell: |
+    set -euo pipefail
+    for i in $(nvidia-smi -L | nl -v 0 | awk '{print $1}'); do
+      nvidia-smi -i $i -mig 1
+    done
+  when: enable_mig

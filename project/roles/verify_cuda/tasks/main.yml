@@ -1,0 +1,21 @@
+- name: nvidia-smi
+  command: nvidia-smi
+  register: smi
+  changed_when: false
+  failed_when: smi.rc != 0
+
+- name: nvcc --version
+  command: /usr/local/cuda/bin/nvcc --version
+  register: nvccv
+  changed_when: false
+  failed_when: nvccv.rc != 0
+
+- name: Extract versions
+  set_fact:
+    nvidia_driver_version: "{{ (smi.stdout | regex_search('Driver Version:\s*([0-9.]+)', '\1')) }}"
+    cuda_nvcc_version: "{{ (nvccv.stdout | regex_search('release\s*([0-9.]+)', '\1')) }}"
+
+- debug:
+    msg:
+      driver_version: "{{ nvidia_driver_version }}"
+      cuda_version: "{{ cuda_nvcc_version }}"

@@ -1,0 +1,59 @@
+- name: Load GPU matrix
+  include_vars: "{{ playbook_dir }}/vars/gpu_matrix.yml"
+
+- name: Query GPU names & driver (if present)
+  command: nvidia-smi --query-gpu=name,driver_version --format=csv,noheader
+  register: smi
+  changed_when: false
+  failed_when: false
+
+- set_fact:
+    gpu_names: "{{ (smi.stdout | default('')).splitlines() | map('regex_replace', ',.*$', '') | list }}"
+    gpu_names_joined: "{{ gpu_names | join(' || ') }}"
+    current_driver_version: >-
+      {{ (smi.stdout_lines | default([]) | first | default('') | regex_search(',\s*([0-9.]+)$','\1')) | default('') }}
+
+- name: Pick architecture rule by GPU name
+  set_fact:
+    gpu_arch_rule: "{{ item }}"
+  loop: "{{ architectures }}"
+  when: item.match_any | map('regex_search', gpu_names_joined) | select('string') | list | length > 0
+  register: arch_pick
+
+- name: Use first matched rule
+  set_fact:
+    gpu_arch_rule: "{{ (arch_pick.results | selectattr('skipped','!=',true) | map(attribute='item') | list)[0] | default({}) }}"
+
+- name: Fail if no matrix rule matched
+  assert:
+    that: "gpu_arch_rule | length > 0"
+    fail_msg: "Không match được GPU với matrix: {{ gpu_names }}"
+
+- name: Decide toolkit major
+  set_fact:
+    target_toolkit_major: >-
+      {{ gpu_arch_rule.recommended_toolkit_major
+         if (gpu_arch_rule.toolkit_max_major is not defined)
+         else ( (gpu_arch_rule.recommended_toolkit_major | default(99)) | min(gpu_arch_rule.toolkit_max_major) )
+      }}
+
+- name: Required driver branch (min)
+  set_fact:
+    min_driver_branch_required: "{{ driver_min_by_toolkit[target_toolkit_major | string] }}"
+
+- name: Choose driver branch (override if desired)
+  set_fact:
+    chosen_driver_branch: >-
+      {{ (desired_driver_branch | default('') | length > 0)
+         | ternary(desired_driver_branch | int, min_driver_branch_required | int) }}
+
+- name: Compute enable_mig
+  set_fact:
+    enable_mig: >-
+      {{ (enable_mig | default(false))
+         and (
+           (gpu_arch_rule.mig_capable | default(false))
+           or (gpu_arch_rule.mig_capable_models is defined and
+               (gpu_names_joined is search(gpu_arch_rule.mig_capable_models | join('|'))))
+         )
+      }}

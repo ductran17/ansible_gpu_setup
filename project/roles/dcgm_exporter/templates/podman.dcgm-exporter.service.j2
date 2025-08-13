@@ -1,0 +1,17 @@
+[Unit]
+Description=NVIDIA DCGM Exporter (Podman)
+After=network-online.target nvidia-dcgm.service nv-hostengine.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/podman run --rm --device nvidia.com/gpu=all --net=host \
+  -e DCGM_EXPORTER_LISTEN=0.0.0.0:{{ dcgm_exporter_port }} \
+  {% if nvidia_dcgm_container_custom_metrics_file %}-v {{ nvidia_dcgm_container_config_dir }}/{{ nvidia_dcgm_container_custom_metrics_file }}:/etc/dcgm-exporter/dcp-metrics-included.csv:ro {% endif %}\
+  --name dcgm-exporter {{ dcgm_exporter_image }}
+ExecStop=/usr/bin/podman stop dcgm-exporter
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

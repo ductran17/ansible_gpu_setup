@@ -1,0 +1,25 @@
+# Bật/tắt kiểm thử trong môi trường không có GPU
+ci_no_gpu: false
+
+# CUDA toolkit (online/offline)
+cuda_install_mode: "offline"
+cuda_version_major_minor: "13.0"
+cuda_runfile: "cuda_13.0.0_linux.run"
+cuda_toolkit_pkg_override: ""
+
+# Driver (nhánh mong muốn; rỗng = dùng min theo matrix)
+desired_driver_branch: ""
+
+# MIG
+enable_mig: false
+
+# ---- cuDNN / DCGM / Exporter ----
+cudnn_install_mode: "package"           # package | tarball | offline_pkgs
+cudnn_deb_packages: ["libcudnn9-cuda-12", "libcudnn9-dev-cuda-12"]
+cudnn_rpm_packages: ["libcudnn9-cuda-12", "libcudnn9-devel-cuda-12"]
+cudnn_tarball: ""                       # nếu dùng tarball, đặt file trong roles/cudnn/files/
+
+dcgm_install_mode: "package"            # package | none
+dcgm_exporter_mode: "container"         # container | binary | none
+dcgm_exporter_image: "nvcr.io/nvidia/k8s/dcgm-exporter:latest"
+dcgm_exporter_port: 9400

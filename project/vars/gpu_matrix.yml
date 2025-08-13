@@ -1,0 +1,59 @@
+# Toolkit major -> driver branch tối thiểu (Linux)
+driver_min_by_toolkit:
+  "13": 580
+  "12": 525
+  "11": 450
+
+# Kiến trúc/SM + gợi ý toolkit + MIG
+architectures:
+  - id: blackwell_dc
+    match_any: ["GB200", "B200"]
+    sm: ["10.0"]
+    recommended_toolkit_major: 13
+    min_driver_branch: 580
+    mig_capable: true
+
+  - id: blackwell_rtx
+    match_any: ["RTX PRO", "GeForce RTX 5"]
+    sm: ["12.0"]
+    recommended_toolkit_major: 13
+    min_driver_branch: 580
+    mig_capable: false
+
+  - id: hopper
+    match_any: ["H100", "H200", "GH200"]
+    sm: ["9.0"]
+    recommended_toolkit_major: 13
+    fallback_toolkit_majors: [12]
+    min_driver_branch: 580
+    mig_capable: true
+
+  - id: ada
+    match_any: ["L40", "L40S", "L4", "RTX 6000 Ada", "RTX 5000 Ada", "RTX 4000 Ada", "RTX 2000 Ada", "GeForce RTX 4"]
+    sm: ["8.9"]
+    recommended_toolkit_major: 13
+    min_driver_branch: 580
+    mig_capable: false
+
+  - id: ampere
+    match_any: ["A100", "A30", "A40", "A10", "RTX A6000", "RTX A5000", "RTX A4000", "GeForce RTX 3"]
+    sm: ["8.0", "8.6", "8.7"]
+    recommended_toolkit_major: 13
+    fallback_toolkit_majors: [12]
+    min_driver_branch: 580
+    mig_capable_models: ["A100", "A30"]
+
+  - id: turing
+    match_any: ["T4", "Quadro RTX", "RTX 20", "T1000", "T600", "T500", "T1200", "T2000", "T400"]
+    sm: ["7.5"]
+    recommended_toolkit_major: 13
+    fallback_toolkit_majors: [12]
+    min_driver_branch: 580
+    mig_capable: false
+
+  - id: volta_pascal_maxwell
+    match_any: ["V100", "P100", "P40", "P4", "GTX 10"]
+    sm: ["7.0", "6.x", "5.x"]
+    toolkit_max_major: 12
+    min_driver_branch: 525
+    mig_capable: false

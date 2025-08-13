@@ -1,0 +1,17 @@
+- name: Blacklist nouveau
+  copy:
+    dest: /etc/modprobe.d/blacklist-nouveau.conf
+    content: |
+      blacklist nouveau
+      options nouveau modeset=0
+  notify: update_initramfs
+
+- name: Update initramfs (Debian/Ubuntu)
+  command: update-initramfs -u
+  when: ansible_os_family == "Debian"
+  notify: reboot_required
+
+- name: Rebuild initramfs (RHEL family)
+  command: dracut --force
+  when: ansible_os_family == "RedHat"
+  notify: reboot_required

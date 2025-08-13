@@ -1,0 +1,14 @@
+driver:
+  name: docker
+platforms:
+  - name: u22
+    image: "ubuntu:22.04"
+    command: "/bin/bash -lc 'sleep infinity'"
+provisioner:
+  name: ansible
+  playbooks:
+    converge: converge.yml
+verifier:
+  name: ansible
+scenario:
+  name: toolkit-offline

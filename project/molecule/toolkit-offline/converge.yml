@@ -1,0 +1,17 @@
+- hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    cuda_install_mode: "offline"
+    cuda_version_major_minor: "13.0"
+    cuda_runfile: "cuda_13.0.0_linux.run"
+  tasks:
+    - name: Copy stub runfile into role files path
+      copy:
+        src: resources/cuda_13.0.0_linux.run
+        dest: "{{ playbook_dir }}/../roles/cuda_toolkit/files/cuda_13.0.0_linux.run"
+        mode: "0755"
+
+  roles:
+    - role: cuda_toolkit
+    - role: verify_cuda

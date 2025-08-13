@@ -1,0 +1,5 @@
+# Prometheus file_sd target cho dcgm-exporter
+- targets:
+  - localhost:{{ dcgm_exporter_port }}
+  labels:
+    job: dcgm-exporter

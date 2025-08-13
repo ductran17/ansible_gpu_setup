@@ -1,0 +1,10 @@
+- name: update_initramfs
+  command: update-initramfs -u
+  listen: update_initramfs
+  when: ansible_os_family == "Debian"
+
+- name: reboot_required
+  reboot:
+    msg: "Reboot sau khi blacklist nouveau"
+    connect_timeout: 300
+    reboot_timeout: 1800

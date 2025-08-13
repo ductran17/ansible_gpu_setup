@@ -1,0 +1,128 @@
+- name: "dcgm-exporter | Decide mode"
+  set_fact:
+    _exp_mode: "{{ dcgm_exporter_mode | default('container') }}"
+
+- name: "dcgm-exporter | create prometheus config dir"
+  file:
+    path: "{{ prometheus_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: "dcgm-exporter | create endpoints config dir"
+  file:
+    path: "{{ prometheus_cfg_endpoint_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: "dcgm-exporter | install file_sd config"
+  template:
+    src: "{{ nvidia_dcgm_exporter_conf_template }}"
+    dest: "{{ prometheus_cfg_endpoint_dir }}/dcgm-exporter.yml"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: "dcgm-exporter | create exporter config dir"
+  file:
+    path: "{{ nvidia_dcgm_container_config_dir }}"
+    state: directory
+    mode: "0755"
+  when: has_gpus | default(false)
+
+- name: "dcgm-exporter | copy metrics file (optional)"
+  copy:
+    src: "{{ nvidia_dcgm_container_custom_metrics_file }}"
+    dest: "{{ nvidia_dcgm_container_config_dir }}/{{ nvidia_dcgm_container_custom_metrics_file }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when: has_gpus | default(false)
+  notify: restart dcgm
+
+# Container mode requires docker or podman
+- name: "dcgm-exporter | Detect docker"
+  stat:
+    path: /usr/bin/docker
+  register: docker_bin
+  when: _exp_mode == 'container'
+
+- name: "dcgm-exporter | Detect podman"
+  stat:
+    path: /usr/bin/podman
+  register: podman_bin
+  when: _exp_mode == 'container'
+
+- name: "dcgm-exporter | Fail if no container runtime"
+  fail:
+    msg: "Chưa cài docker/podman mà dcgm_exporter_mode=container"
+  when: _exp_mode == 'container' and not (docker_bin.stat.exists or podman_bin.stat.exists)
+
+- name: "dcgm-exporter | install systemd unit (docker)"
+  template:
+    src: "docker.dcgm-exporter.service.j2"
+    dest: "/etc/systemd/system/{{ nvidia_dcgm_svc_name }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: _exp_mode == 'container' and docker_bin.stat.exists and has_gpus | default(false)
+  notify: restart dcgm
+
+- name: "dcgm-exporter | install systemd unit (podman)"
+  template:
+    src: "podman.dcgm-exporter.service.j2"
+    dest: "/etc/systemd/system/{{ nvidia_dcgm_svc_name }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: _exp_mode == 'container' and (not docker_bin.stat.exists) and podman_bin.stat.exists and has_gpus | default(false)
+  notify: restart dcgm
+
+- name: "dcgm-exporter | configure service"
+  systemd:
+    name: "{{ nvidia_dcgm_svc_name }}"
+    state: "{{ nvidia_dcgm_state }}"
+    enabled: "{{ nvidia_dcgm_enabled }}"
+    daemon_reload: yes
+  when: _exp_mode in ['container','binary'] and has_gpus | default(false)
+
+# Binary mode (optional): copy binary and create unit
+- name: "dcgm-exporter | Install binary"
+  copy:
+    src: "dcgm-exporter"
+    dest: "/usr/local/bin/dcgm-exporter"
+    mode: "0755"
+  when: _exp_mode == 'binary' and has_gpus | default(false)
+
+- name: "dcgm-exporter | install systemd unit (binary)"
+  copy:
+    dest: "/etc/systemd/system/{{ nvidia_dcgm_svc_name }}"
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=NVIDIA DCGM Exporter (binary)
+      After=network-online.target nvidia-dcgm.service nv-hostengine.service
+      Wants=network-online.target
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/local/bin/dcgm-exporter --web-config-file="" --address 0.0.0.0 --port {{ dcgm_exporter_port }}
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+  when: _exp_mode == 'binary' and has_gpus | default(false)
+  notify: restart dcgm
+
+- name: "dcgm-exporter | verify endpoint (if GPU present)"
+  uri:
+    url: "http://127.0.0.1:{{ dcgm_exporter_port }}/metrics"
+    return_content: true
+  register: exporter_metrics
+  changed_when: false
+  failed_when: false
+  when: has_gpus | default(false)
+
+- name: "dcgm-exporter | show first lines of metrics"
+  debug:
+    msg: "{{ (exporter_metrics.content.splitlines()[:5] | list) if (exporter_metrics is defined and exporter_metrics.content) else 'no metrics fetched' }}"
+  when: exporter_metrics is defined
