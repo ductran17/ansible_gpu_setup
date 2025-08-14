@@ -1,0 +1,5 @@
+[gpu_nodes]
+bare1 ansible_host=100.73.190.125 ansible_user=os_sysadmin
+
+[gpu_nodes:vars]
+ansible_become=true

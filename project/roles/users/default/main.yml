@@ -1,0 +1,12 @@
+# Tên/nghiệp vụ user
+new_user_name: ""                 # BẮT BUỘC: truyền qua -e hoặc group_vars
+new_user_plain_password: ""       # BẮT BUỘC: plaintext để tạo hash (Ansible sẽ hash trước khi tạo)
+new_user_shell: "/bin/bash"
+new_user_uid: ""                  # optional
+new_user_home: ""                 # optional (mặc định /home/<user>)
+new_user_sudo: true               # add vào group sudo (Ubuntu) / wheel (RHEL)
+new_user_groups_extra: []         # các group bổ sung khác (list)
+new_user_expire_password_on_first_login: false  # chage -d 0 sau khi tạo
+
+# In password ra log? Mặc định tắt để an toàn. Bật khi bạn cần nhìn thấy để chuyển cho người dùng.
+expose_password_in_logs: false

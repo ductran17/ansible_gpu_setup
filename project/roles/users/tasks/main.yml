@@ -1,0 +1,77 @@
+- name: Users | Assert required vars
+  assert:
+    that:
+      - "(new_user_name | default('') | length) > 0"
+      - "(new_user_plain_password | default('') | length) > 0"
+    fail_msg: "Cần truyền new_user_name và new_user_plain_password (qua -e hoặc group_vars)."
+
+# Kiểm tra user đã tồn tại?
+- name: Users | Check if user exists
+  command: "id -u {{ new_user_name }}"
+  register: _idchk
+  changed_when: false
+  failed_when: false
+
+- name: Users | Set flag user_exists
+  set_fact:
+    user_exists: "{{ (_idchk.rc | int) == 0 }}"
+
+- name: Users | Inform skip if exists
+  debug:
+    msg: "User '{{ new_user_name }}' đã tồn tại -> skip tạo mới."
+  when: user_exists
+
+# Tạo user mới (chỉ khi chưa có)
+- block:
+    - name: Users | Ensure sudo package present on Debian/Ubuntu
+      apt:
+        name: sudo
+        state: present
+        update_cache: false
+      when: ansible_os_family == "Debian"
+      become: true
+
+    # --- Tính nhóm sudo và danh sách groups ---
+    - name: Users | Compute sudo group by OS (part 1)
+      set_fact:
+        _sudo_group: "{{ 'wheel' if ansible_os_family == 'RedHat' else 'sudo' }}"
+        _add_sudo: "{{ (new_user_sudo | default(true)) | bool }}"
+        _extra_groups: "{{ (new_user_groups_extra | default([])) | list }}"
+
+    - name: Users | Compose final groups list (part 2)
+      set_fact:
+        _all_groups: "{{ (_add_sudo | ternary([_sudo_group], [])) + _extra_groups }}"
+
+    # --- Hash mật khẩu bằng passlib (SHA-512) ---
+    - name: Users | Hash password (sha512 via passlib)
+      set_fact:
+        _pw_hash: "{{ new_user_plain_password | password_hash('sha512') }}"
+      no_log: true
+
+    - name: Users | Create user
+      user:
+        name: "{{ new_user_name }}"
+        state: present
+        shell: "{{ new_user_shell | default('/bin/bash') }}"
+        create_home: true
+        uid: "{{ new_user_uid | default(omit) }}"
+        home: "{{ new_user_home | default(omit) }}"
+        groups: "{{ (_all_groups | length > 0) | ternary(_all_groups | join(','), omit) }}"
+        append: true
+        password: "{{ _pw_hash }}"
+        update_password: on_create
+      become: true
+
+    - name: Users | Expire password on first login
+      command: "chage -d 0 {{ new_user_name }}"
+      when: new_user_expire_password_on_first_login | default(false)
+      changed_when: true
+      become: true
+
+    - name: Users | Show created account & password (disabled by default)
+      debug:
+        msg:
+          username: "{{ new_user_name }}"
+          password: "{{ new_user_plain_password }}"
+      when: expose_password_in_logs | bool
+  when: not user_exists

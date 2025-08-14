@@ -2,14 +2,25 @@
   become: true
   any_errors_fatal: true
   roles:
-    # - user
-    - precheck
-    - select_gpu
-    - nouveau_blacklist
-    - nvidia_driver
-    - cuda_toolkit
-    # - cudnn
-    # - dcgm_host
-    # - dcgm_exporter
-    - { role: mig_config, when: enable_mig | default(false) }
-    - verify_cuda
+    # # - user
+    # - precheck
+    # - select_gpu
+    # - nouveau_blacklist
+    # - nvidia_driver
+    # - cuda_toolkit
+    # # - cudnn
+    # # - dcgm_host
+    # # - dcgm_exporter
+    # - { role: mig_config, when: enable_mig | default(false) }
+    # - verify_cuda
+    - { role: precheck,          tags: ['precheck'] }
+    - { role: select_gpu,        tags: ['select_gpu'] }
+    - { role: nouveau_blacklist, tags: ['blacklist'] }
+    - { role: nvidia_driver,     tags: ['driver'] }
+    - { role: cuda_toolkit,      tags: ['toolkit','cuda'] }
+    - { role: cudnn,             tags: ['cudnn'] }
+    - { role: dcgm_host,         tags: ['dcgm'] }
+    - { role: dcgm_exporter,     tags: ['dcgm_exporter'] }
+    - { role: mig_config,        when: enable_mig | default(false), tags: ['mig'] }
+    - { role: users,             tags: ['users','bootstrap'] }   # ← thêm
+    - { role: verify_cuda,       tags: ['verify'] }
