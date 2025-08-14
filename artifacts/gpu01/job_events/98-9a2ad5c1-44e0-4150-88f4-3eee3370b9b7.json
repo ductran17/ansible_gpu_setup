@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "9a2ad5c1-44e0-4150-88f4-3eee3370b9b7", "counter": 98, "stdout": "  -k, --ask-pass        ask for connection password", "start_line": 97, "end_line": 98, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.332655+00:00"}

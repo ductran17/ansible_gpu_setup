@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "689e33f8-c1df-4bdd-82b1-1adb4390fc10", "counter": 111, "stdout": "  control as whom and how to connect to hosts", "start_line": 110, "end_line": 111, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.147468+00:00"}

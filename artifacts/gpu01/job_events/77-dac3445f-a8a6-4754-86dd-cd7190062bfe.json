@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "dac3445f-a8a6-4754-86dd-cd7190062bfe", "counter": 77, "stdout": "  -J, --ask-vault-password, --ask-vault-pass", "start_line": 76, "end_line": 77, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.871092+00:00"}

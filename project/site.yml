@@ -2,13 +2,14 @@
   become: true
   any_errors_fatal: true
   roles:
+    # - user
     - precheck
     - select_gpu
     - nouveau_blacklist
     - nvidia_driver
     - cuda_toolkit
-    - cudnn
-    - dcgm_host
-    - dcgm_exporter
+    # - cudnn
+    # - dcgm_host
+    # - dcgm_exporter
     - { role: mig_config, when: enable_mig | default(false) }
     - verify_cuda

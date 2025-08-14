@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "74a11bc7-c8e7-41af-a244-d3bafad3a62f", "counter": 137, "stdout": "                        privilege escalation method to use (default=sudo), use", "start_line": 136, "end_line": 137, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.340230+00:00"}

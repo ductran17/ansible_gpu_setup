@@ -1,25 +1,29 @@
-# Bật/tắt kiểm thử trong môi trường không có GPU
+# === GPU thật, không giả lập
 ci_no_gpu: false
 
-# CUDA toolkit (online/offline)
-cuda_install_mode: "offline"
-cuda_version_major_minor: "13.0"
-cuda_runfile: "cuda_13.0.0_linux.run"
+# === CUDA: 12.x lành với Turing + noble (khỏi bị đòi 580)
+cuda_install_mode: "online"
+cuda_version_major_minor: "12.4"        # ĐỔI từ "13.0" về 12.4 (12.5 cũng OK)
+cuda_runfile: ""
 cuda_toolkit_pkg_override: ""
 
-# Driver (nhánh mong muốn; rỗng = dùng min theo matrix)
-desired_driver_branch: ""
-
-# MIG
+# === MIG (RTX 2080 không MIG)
 enable_mig: false
 
-# ---- cuDNN / DCGM / Exporter ----
-cudnn_install_mode: "package"           # package | tarball | offline_pkgs
+# === Driver: chọn nhánh có sẵn trên noble
+desired_driver_branch: "570"            # noble có 535/550/570; 570 lành
+
+# === cuDNN (theo CUDA 12)
+install_cudnn: true
+cudnn_install_mode: "package"
 cudnn_deb_packages: ["libcudnn9-cuda-12", "libcudnn9-dev-cuda-12"]
 cudnn_rpm_packages: ["libcudnn9-cuda-12", "libcudnn9-devel-cuda-12"]
-cudnn_tarball: ""                       # nếu dùng tarball, đặt file trong roles/cudnn/files/
+cudnn_tarball: ""
 
-dcgm_install_mode: "package"            # package | none
-dcgm_exporter_mode: "container"         # container | binary | none
+# === DCGM/Exporter: nếu CHƯA có Docker/NVIDIA Container Toolkit, tắt đi cho gọn
+install_dcgm: false
+install_dcgm_exporter: false
+dcgm_install_mode: "none"
+dcgm_exporter_mode: "none"
 dcgm_exporter_image: "nvcr.io/nvidia/k8s/dcgm-exporter:latest"
 dcgm_exporter_port: 9400

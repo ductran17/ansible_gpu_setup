@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "cbde984c-e42b-4bae-b467-8b4691428927", "counter": 90, "stdout": "  -f FORKS, --forks FORKS", "start_line": 89, "end_line": 90, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.143555+00:00"}

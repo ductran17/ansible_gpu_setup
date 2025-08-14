@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "6669e92b-f49c-4c4e-9c00-6f91934036f2", "counter": 81, "stdout": "  -M MODULE_PATH, --module-path MODULE_PATH", "start_line": 80, "end_line": 81, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.328887+00:00"}

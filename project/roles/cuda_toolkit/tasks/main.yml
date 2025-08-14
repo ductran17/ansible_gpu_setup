@@ -1,41 +1,127 @@
-# ONLINE (repo NVIDIA)
-- name: (ONLINE) Install CUDA Toolkit on Debian/Ubuntu
+- name: CUDA | Echo mode & vars
+  debug:
+    msg:
+      mode: "{{ cuda_install_mode | default('') }}"
+      version: "{{ cuda_version_major_minor | default('') }}"
+      pkg_override: "{{ cuda_toolkit_pkg_override | default('', true) }}"
+      runfile: "{{ cuda_runfile | default('', true) }}"
+
+# ====== ONLINE path ======
+# 1) Tách major/minor từ biến version (không render 2 biến mới trong cùng set_fact)
+- name: CUDA | Parse major/minor from version
+  set_fact:
+    _v_parts: "{{ (cuda_version_major_minor | default('', true) | string).split('.') }}"
+  when: (cuda_install_mode | lower) == "online"
+
+# (Tuỳ chọn) đảm bảo có version hợp lệ khi cài online
+- name: CUDA | Assert version provided (online)
+  assert:
+    that:
+      - cuda_version_major_minor is defined
+      - (cuda_version_major_minor | string | length) > 0
+    fail_msg: "cuda_version_major_minor trống hoặc không hợp lệ (ví dụ: '12.4')."
+  when: (cuda_install_mode | lower) == "online"
+
+# 2) Dựng tên gói; nếu có override thì dùng override, ngược lại ghép từ major/minor
+- name: CUDA | Build CUDA APT package name
+  set_fact:
+    _cuda_pkg_name: >-
+      {{ (cuda_toolkit_pkg_override | default('', true))
+         or ('cuda-toolkit-' ~ _v_parts[0] ~ '-' ~ (_v_parts[1] | default('0'))) }}
+  when: (cuda_install_mode | lower) == "online"
+
+# Sanity: nếu vẫn còn dấu chấm (do override sai), đổi về gạch
+- name: CUDA | Normalize package name to dashed form
+  set_fact:
+    _cuda_pkg_name: "{{ _cuda_pkg_name | replace('.', '-') }}"
+  when: (cuda_install_mode | lower) == "online"
+
+- name: CUDA | Show final APT package
+  debug:
+    var: _cuda_pkg_name
+  when: (cuda_install_mode | lower) == "online"
+
+# Keyring cho Ubuntu
+- name: CUDA | Ensure NVIDIA CUDA keyring on Ubuntu 22.04 (jammy)
   apt:
-    name: "{{ cuda_toolkit_pkg_override | default('cuda-toolkit-' ~ target_toolkit_major ~ '-0') }}"
+    deb: "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb"
     state: present
-    update_cache: yes
-  when: cuda_install_mode == "online" and ansible_os_family == "Debian"
+  when: (cuda_install_mode | lower) == "online" and ansible_distribution_release == "jammy"
+  become: true
 
-- name: (ONLINE) Install CUDA Toolkit on RHEL family
+- name: CUDA | Ensure NVIDIA CUDA keyring on Ubuntu 24.04 (noble)
+  apt:
+    deb: "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb"
+    state: present
+  when: (cuda_install_mode | lower) == "online" and ansible_distribution_release == "noble"
+  become: true
+
+- name: CUDA | apt update (online)
+  apt:
+    update_cache: true
+  when: (cuda_install_mode | lower) == "online"
+  changed_when: false
+  become: true
+
+# (Tuỳ chọn) kiểm tra repo nhìn thấy gói
+- name: CUDA | Check package visibility
+  command: "apt-cache policy {{ _cuda_pkg_name }}"
+  register: _cuda_pkg_check
+  changed_when: false
+  failed_when: "'Candidate: (none)' in _cuda_pkg_check.stdout"
+  when: (cuda_install_mode | lower) == "online" and ansible_os_family == "Debian"
+
+- name: CUDA | (ONLINE) Install CUDA Toolkit on Debian/Ubuntu
+  apt:
+    name: "{{ _cuda_pkg_name }}"
+    state: present
+  when: (cuda_install_mode | lower) == "online" and ansible_os_family == "Debian"
+  become: true
+
+# (RHEL family nếu cần)
+- name: CUDA | (ONLINE) Install CUDA Toolkit on RHEL family
   dnf:
-    name: "{{ cuda_toolkit_pkg_override | default('cuda-toolkit') }}"
+    name: "{{ (cuda_toolkit_pkg_override | default('', true)) or 'cuda-toolkit' }}"
     state: present
-  when: cuda_install_mode == "online" and ansible_os_family == "RedHat"
+  when: (cuda_install_mode | lower) == "online" and ansible_os_family == "RedHat"
+  become: true
 
-# OFFLINE (.run toolkit-only)
+# ====== OFFLINE path (.run toolkit-only) ======
 - name: Ensure /opt/cuda exists
   file:
     path: /opt/cuda
     state: directory
     mode: "0755"
-  when: cuda_install_mode == "offline"
+  when: (cuda_install_mode | lower) == "offline"
+  become: true
+
+- name: Assert runfile provided (offline)
+  assert:
+    that:
+      - cuda_runfile is defined
+      - (cuda_runfile | string | length) > 0
+    fail_msg: "cuda_runfile chưa được chỉ định (offline)."
+  when: (cuda_install_mode | lower) == "offline"
 
 - name: Copy runfile
   copy:
     src: "{{ cuda_runfile }}"
     dest: "/opt/cuda/{{ cuda_runfile }}"
     mode: "0755"
-  when: cuda_install_mode == "offline"
+  when: (cuda_install_mode | lower) == "offline"
+  become: true
 
 - name: (OFFLINE) Install toolkit silent
   command: "sh /opt/cuda/{{ cuda_runfile }} --silent --toolkit"
   args:
     creates: "/usr/local/cuda-{{ cuda_version_major_minor }}/bin/nvcc"
-  when: cuda_install_mode == "offline"
+  when: (cuda_install_mode | lower) == "offline"
+  become: true
 
 - name: Symlink /usr/local/cuda → version
   file:
     src: "/usr/local/cuda-{{ cuda_version_major_minor }}"
     dest: "/usr/local/cuda"
     state: link
-  when: cuda_install_mode == "offline"
+  when: (cuda_install_mode | lower) == "offline"
+  become: true

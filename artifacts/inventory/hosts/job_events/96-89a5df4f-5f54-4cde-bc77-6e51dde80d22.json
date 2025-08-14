@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "89a5df4f-5f54-4cde-bc77-6e51dde80d22", "counter": 96, "stdout": "                        list. --inventory-file is deprecated. This argument", "start_line": 95, "end_line": 96, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.144584+00:00"}

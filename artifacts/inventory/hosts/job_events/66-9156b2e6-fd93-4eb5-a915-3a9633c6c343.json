@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "9156b2e6-fd93-4eb5-a915-3a9633c6c343", "counter": 66, "stdout": "  --vault-id VAULT_IDS  the vault identity to use. This argument may be", "start_line": 65, "end_line": 66, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.139070+00:00"}

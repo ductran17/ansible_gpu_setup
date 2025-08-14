@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "e0adffa1-2f6b-4731-abb8-a6679ea17438", "counter": 26, "stdout": "                        [--scp-extra-args SCP_EXTRA_ARGS]", "start_line": 25, "end_line": 26, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.131075+00:00"}

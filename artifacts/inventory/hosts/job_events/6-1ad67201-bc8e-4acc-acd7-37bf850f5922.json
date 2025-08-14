@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "1ad67201-bc8e-4acc-acd7-37bf850f5922", "counter": 6, "stdout": "                        [--ssh-extra-args SSH_EXTRA_ARGS]", "start_line": 5, "end_line": 6, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.127541+00:00"}

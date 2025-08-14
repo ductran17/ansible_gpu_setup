@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "0707390a-bc2d-4e99-8495-81899c0209d1", "counter": 82, "stdout": "                        prepend colon-separated path(s) to module library", "start_line": 81, "end_line": 82, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.141953+00:00"}

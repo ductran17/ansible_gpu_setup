@@ -12,8 +12,8 @@
 
 - name: Extract versions
   set_fact:
-    nvidia_driver_version: "{{ (smi.stdout | regex_search('Driver Version:\s*([0-9.]+)', '\1')) }}"
-    cuda_nvcc_version: "{{ (nvccv.stdout | regex_search('release\s*([0-9.]+)', '\1')) }}"
+        nvidia_driver_version: "{{ smi.stdout | regex_search('Driver Version:\\s*([0-9.]+)', '\\1') }}"
+        cuda_nvcc_version: "{{ nvccv.stdout | regex_search('release\\s*([0-9.]+)', '\\1') }}"
 
 - debug:
     msg:

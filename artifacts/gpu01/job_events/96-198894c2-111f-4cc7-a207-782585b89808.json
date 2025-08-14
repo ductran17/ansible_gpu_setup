@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "198894c2-111f-4cc7-a207-782585b89808", "counter": 96, "stdout": "                        list. --inventory-file is deprecated. This argument", "start_line": 95, "end_line": 96, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.332251+00:00"}

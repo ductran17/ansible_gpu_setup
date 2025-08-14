@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "32e8ec65-5dd9-47b8-9229-85ccee5ef439", "counter": 75, "stdout": "  -D, --diff            when changing (small) files and templates, show the", "start_line": 74, "end_line": 75, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.140693+00:00"}

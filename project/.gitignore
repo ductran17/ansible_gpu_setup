@@ -1,0 +1,8 @@
+# Ignore hosts.ini trong project/
+project/hosts.ini
+
+# Ignore toàn bộ file/folder trong env/
+env/
+
+# Ignore file inventory/hosts
+inventory/hosts

@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "c97ca8a3-b4ec-40e3-9461-1bb409e3187c", "counter": 84, "stdout": "                        \"/plugins/modules:/usr/share/ansible/plugins/modules\"", "start_line": 83, "end_line": 84, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.872321+00:00"}

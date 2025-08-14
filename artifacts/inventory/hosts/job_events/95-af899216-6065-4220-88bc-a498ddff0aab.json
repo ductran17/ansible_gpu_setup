@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "af899216-6065-4220-88bc-a498ddff0aab", "counter": 95, "stdout": "                        specify inventory host path or comma separated host", "start_line": 94, "end_line": 95, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.144416+00:00"}

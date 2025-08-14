@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "fd7bd1ad-db18-4839-8101-d4fee4d27236", "counter": 125, "stdout": "  -T TIMEOUT, --timeout TIMEOUT", "start_line": 124, "end_line": 125, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.150551+00:00"}

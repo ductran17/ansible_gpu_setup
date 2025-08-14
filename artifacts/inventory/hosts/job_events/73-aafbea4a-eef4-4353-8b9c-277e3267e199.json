@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "aafbea4a-eef4-4353-8b9c-277e3267e199", "counter": 73, "stdout": "  -C, --check           don't make any changes; instead, try to predict some", "start_line": 72, "end_line": 73, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.140358+00:00"}

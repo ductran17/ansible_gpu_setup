@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "3a373306-eaee-4af3-ba4e-89bbc5b1ce83", "counter": 12, "stdout": "                        [-t TAGS] [--skip-tags SKIP_TAGS] [-C] [-D]", "start_line": 11, "end_line": 12, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.858158+00:00"}

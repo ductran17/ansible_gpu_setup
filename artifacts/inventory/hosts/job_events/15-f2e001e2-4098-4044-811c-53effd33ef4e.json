@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "f2e001e2-4098-4044-811c-53effd33ef4e", "counter": 15, "stdout": "                        [-J | --vault-password-file VAULT_PASSWORD_FILES]", "start_line": 14, "end_line": 15, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.128987+00:00"}

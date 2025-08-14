@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "7951f8f5-4639-4d9c-92f0-1e1fa0a499ee", "counter": 87, "stdout": "                        set additional variables as key=value or YAML/JSON, if", "start_line": 86, "end_line": 87, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.872860+00:00"}

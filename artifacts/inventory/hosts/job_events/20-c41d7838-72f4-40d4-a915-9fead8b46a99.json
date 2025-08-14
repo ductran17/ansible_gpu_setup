@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "c41d7838-72f4-40d4-a915-9fead8b46a99", "counter": 20, "stdout": "ansible-playbook: error: unrecognized arguments: site.yml", "start_line": 19, "end_line": 20, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.129807+00:00"}

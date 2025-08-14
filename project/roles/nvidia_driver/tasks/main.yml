@@ -1,20 +1,146 @@
+# ===================== OLD =====================
+# - name: Install NVIDIA driver (meets min branch)
+#   import_role:
+#     name: nvidia.nvidia_driver
+#   vars:
+#     nvidia_driver_branch: "{{ chosen_driver_branch }}"
+#
+# - name: Check installed driver version
+#   command: nvidia-smi --query-gpu=driver_version --format=csv,noheader
+#   register: smi_after
+#   changed_when: false
+#
+# - set_fact:
+#     installed_driver_version: "{{ (smi_after.stdout_lines | first | default('0')) }}"
+#
+# - name: Assert installed driver >= required branch
+#   assert:
+#     that:
+#       - "(installed_driver_version.split('.')[0] | int) >= (min_driver_branch_required | int)"
+#     fail_msg: "Driver {{ installed_driver_version }} < yêu cầu r{{ min_driver_branch_required }} cho CUDA {{ target_toolkit_major }}"
 
-- name: Install NVIDIA driver (meets min branch)
+# ===================== NEW (wrapper sạch, KHÔNG sửa site.yml) =====================
+
+- name: Show target vars
+  debug:
+    msg:
+      os_release: "{{ ansible_distribution_release }}"
+      desired_driver_branch: "{{ desired_driver_branch | default('') }}"
+      chosen_driver_branch: "{{ chosen_driver_branch | default('') }}"
+      min_driver_branch_required: "{{ min_driver_branch_required | default('') }}"
+  tags: [driver]
+
+# --- Dọn repo CUDA sai đời (để apt không kéo nhầm) ---
+# Jammy (22.04) mà lỡ có repo 24.04 → bỏ
+- name: Remove CUDA ubuntu2404 repo on jammy (if present)
+  file:
+    path: /etc/apt/sources.list.d/cuda-ubuntu2404-x86_64.list
+    state: absent
+  register: _rm2404_on_jammy
+  when: ansible_distribution_release == "jammy"
+  ignore_errors: true
+  tags: [driver]
+
+# Noble (24.04) mà lỡ có repo 22.04 → bỏ (để role portable giữa các máy)
+- name: Remove CUDA ubuntu2204 repo on noble (if present)
+  file:
+    path: /etc/apt/sources.list.d/cuda-ubuntu2204-x86_64.list
+    state: absent
+  register: _rm2204_on_noble
+  when: ansible_distribution_release == "noble"
+  ignore_errors: true
+  tags: [driver]
+
+- name: apt update if any wrong repo removed
+  apt:
+    update_cache: true
+  when: >
+    ( _rm2404_on_jammy is defined and _rm2404_on_jammy.changed ) or
+    ( _rm2204_on_noble is defined and _rm2204_on_noble.changed )
+  changed_when: false
+  tags: [driver]
+
+# Gỡ meta có thể xung đột (nếu còn)
+- name: Purge conflicting Nvidia meta if present
+  apt:
+    name: libnvidia-cfg1-any
+    state: absent
+    purge: true
+  ignore_errors: true
+  tags: [driver]
+
+- name: Autoremove leftovers
+  apt:
+    autoremove: yes
+  changed_when: false
+  tags: [driver]
+
+# --- Chọn nhánh driver ---
+# Jammy (22.04) mặc định 550; Noble (24.04) mặc định 570
+- name: Pick default driver branch by distro
+  set_fact:
+    _default_branch: "{{ '550' if ansible_distribution_release == 'jammy' else '570' }}"
+  tags: [driver]
+
+# desired_driver_branch > chosen_driver_branch (từ select_gpu) > default theo distro
+- name: Decide final driver branch
+  set_fact:
+    _final_driver_branch: >-
+      {{  (desired_driver_branch | default('')) | ternary(desired_driver_branch,
+          (chosen_driver_branch  | default('')) | ternary(chosen_driver_branch, _default_branch))  }}
+  tags: [driver]
+
+# --- Cài driver bằng Galaxy role (KHÔNG pin version, KHÔNG dùng CUDA repo) ---
+- name: Install NVIDIA driver via Galaxy role (Canonical repo; do NOT pin)
   import_role:
     name: nvidia.nvidia_driver
   vars:
-    nvidia_driver_branch: "{{ chosen_driver_branch }}"
+    nvidia_driver_branch: "{{ _final_driver_branch }}"
+    nvidia_driver_package_state: present
+    nvidia_driver_package_version: ""             # KHÔNG PIN → tránh kéo bản lệch distro
+    nvidia_driver_skip_reboot: yes                # không reboot giữa chừng
+    nvidia_driver_persistence_mode_on: yes
+    nvidia_driver_ubuntu_install_from_cuda_repo: no  # dùng repo Ubuntu chuẩn
+    # Nếu muốn bỏ biến thể "-server", mở comment dòng dưới:
+    # nvidia_driver_ubuntu_packages_suffix: ""
+  tags: [driver]
 
-- name: Check installed driver version
+# --- Reboot có điều kiện khi gặp mismatch (rc=18) ---
+- name: Probe nvidia-smi (post-install; allow failure)
+  command: nvidia-smi --query-gpu=driver_version --format=csv,noheader
+  register: smi_probe
+  changed_when: false
+  failed_when: false
+  tags: [driver]
+
+- name: Decide need reboot to load new NVIDIA module
+  set_fact:
+    _need_driver_reboot: "{{ (smi_probe.rc | int) == 18 or ('Driver/library version mismatch' in (smi_probe.stdout | default(''))) }}"
+  tags: [driver]
+
+- name: Reboot to load new NVIDIA driver if needed
+  reboot:
+    reboot_timeout: 900
+    msg: "Reboot by Ansible to load new NVIDIA kernel module"
+  when: _need_driver_reboot | bool
+  tags: [driver]
+
+# --- Verify lại sau reboot (hoặc nếu không cần reboot) ---
+- name: Verify nvidia-smi
   command: nvidia-smi --query-gpu=driver_version --format=csv,noheader
   register: smi_after
   changed_when: false
+  tags: [driver]
 
-- set_fact:
-    installed_driver_version: "{{ (smi_after.stdout_lines | first | default('0')) }}"
+- name: Extract installed driver version
+  set_fact:
+    installed_driver_version: "{{ smi_after.stdout_lines | first | default('0') }}"
+  tags: [driver]
 
 - name: Assert installed driver >= required branch
   assert:
     that:
       - "(installed_driver_version.split('.')[0] | int) >= (min_driver_branch_required | int)"
     fail_msg: "Driver {{ installed_driver_version }} < yêu cầu r{{ min_driver_branch_required }} cho CUDA {{ target_toolkit_major }}"
+  when: min_driver_branch_required is defined and (min_driver_branch_required | string) | length > 0
+  tags: [driver]

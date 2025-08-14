@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "1eca459a-859a-4591-b738-698d5743c292", "counter": 15, "stdout": "                        [-J | --vault-password-file VAULT_PASSWORD_FILES]", "start_line": 14, "end_line": 15, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.315055+00:00"}

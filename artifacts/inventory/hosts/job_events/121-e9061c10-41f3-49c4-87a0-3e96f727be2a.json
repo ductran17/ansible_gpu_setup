@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "e9061c10-41f3-49c4-87a0-3e96f727be2a", "counter": 121, "stdout": "                        specify common arguments to pass to sftp/scp/ssh (e.g.", "start_line": 120, "end_line": 121, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.149650+00:00"}

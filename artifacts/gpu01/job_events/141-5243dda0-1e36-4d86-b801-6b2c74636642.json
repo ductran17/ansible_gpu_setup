@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "5243dda0-1e36-4d86-b801-6b2c74636642", "counter": 141, "stdout": "  -b, --become          run operations with become (does not imply password", "start_line": 140, "end_line": 141, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.340918+00:00"}

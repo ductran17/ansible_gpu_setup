@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "e393e794-7826-45dd-a49d-517a3d514bc9", "counter": 35, "stdout": "                        [-e EXTRA_VARS] [--vault-id VAULT_IDS]", "start_line": 34, "end_line": 35, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.318800+00:00"}

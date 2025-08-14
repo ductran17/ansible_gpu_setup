@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "d3dbbf33-0cb1-4f9b-b5de-d5dd66ca298d", "counter": 14, "stdout": "                        [-e EXTRA_VARS] [--vault-id VAULT_IDS]", "start_line": 13, "end_line": 14, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.128806+00:00"}

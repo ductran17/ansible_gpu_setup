@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "40ca6346-a9cf-47f4-9477-82575eb4e14f", "counter": 57, "stdout": "  --list-tasks          list all tasks that would be executed", "start_line": 56, "end_line": 57, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.867504+00:00"}

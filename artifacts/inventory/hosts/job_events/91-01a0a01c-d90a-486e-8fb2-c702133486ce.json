@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "01a0a01c-d90a-486e-8fb2-c702133486ce", "counter": 91, "stdout": "                        specify number of parallel processes to use", "start_line": 90, "end_line": 91, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.143723+00:00"}

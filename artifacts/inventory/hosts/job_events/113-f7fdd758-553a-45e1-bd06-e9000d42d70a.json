@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "f7fdd758-553a-45e1-bd06-e9000d42d70a", "counter": 113, "stdout": "  --private-key PRIVATE_KEY_FILE, --key-file PRIVATE_KEY_FILE", "start_line": 112, "end_line": 113, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.147813+00:00"}

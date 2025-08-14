@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "c3cfdf69-ebbb-4905-a6df-495345a4f15c", "counter": 50, "stdout": "  --connection-password-file CONNECTION_PASSWORD_FILE, --conn-pass-file CONNECTION_PASSWORD_FILE", "start_line": 49, "end_line": 50, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.136134+00:00"}

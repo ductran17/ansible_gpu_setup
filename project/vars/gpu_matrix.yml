@@ -1,8 +1,8 @@
 # Toolkit major -> driver branch tối thiểu (Linux)
 driver_min_by_toolkit:
-  "13": 580
-  "12": 525
-  "11": 450
+  "13": 550
+  "12": 535
+  "11": 470
 
 # Kiến trúc/SM + gợi ý toolkit + MIG
 architectures:

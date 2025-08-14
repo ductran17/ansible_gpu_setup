@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "a4e6f04a-66eb-4f99-a852-7693995d4105", "counter": 53, "stdout": "  --force-handlers      run handlers even if a task fails", "start_line": 52, "end_line": 53, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.866560+00:00"}

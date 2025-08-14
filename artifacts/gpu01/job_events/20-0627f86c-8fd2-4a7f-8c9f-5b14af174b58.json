@@ -1,0 +1,1 @@
+{"event": "verbose", "uuid": "0627f86c-8fd2-4a7f-8c9f-5b14af174b58", "counter": 20, "stdout": "ansible-playbook: error: unrecognized arguments: site.yml", "start_line": 19, "end_line": 20, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.859747+00:00"}
