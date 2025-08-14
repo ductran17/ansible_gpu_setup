@@ -44,3 +44,13 @@ nvidia_dcgm_container_custom_metrics_file: "dcgm_metrics.csv"
 nvidia_dcgm_svc_name: "dcgm-exporter.service"
 nvidia_dcgm_state: "started"
 nvidia_dcgm_enabled: true
+
+# ---- User Management ----
+# Required variables for users role
+new_user_name: "gpu_user"
+new_user_plain_password: "ChangeMe123!"
+new_user_sudo: true
+new_user_groups_extra: []
+new_user_shell: "/bin/bash"
+new_user_expire_password_on_first_login: false
+expose_password_in_logs: false

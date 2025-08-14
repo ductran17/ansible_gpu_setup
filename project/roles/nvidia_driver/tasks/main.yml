@@ -90,19 +90,36 @@
           (chosen_driver_branch  | default('')) | ternary(chosen_driver_branch, _default_branch))  }}
   tags: [driver]
 
-# --- Cài driver bằng Galaxy role (KHÔNG pin version, KHÔNG dùng CUDA repo) ---
-- name: Install NVIDIA driver via Galaxy role (Canonical repo; do NOT pin)
-  import_role:
-    name: nvidia.nvidia_driver
-  vars:
-    nvidia_driver_branch: "{{ _final_driver_branch }}"
-    nvidia_driver_package_state: present
-    nvidia_driver_package_version: ""             # KHÔNG PIN → tránh kéo bản lệch distro
-    nvidia_driver_skip_reboot: yes                # không reboot giữa chừng
-    nvidia_driver_persistence_mode_on: yes
-    nvidia_driver_ubuntu_install_from_cuda_repo: no  # dùng repo Ubuntu chuẩn
-    # Nếu muốn bỏ biến thể "-server", mở comment dòng dưới:
-    # nvidia_driver_ubuntu_packages_suffix: ""
+# --- Cài driver bằng standard Ansible modules ---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  tags: [driver]
+
+- name: Install NVIDIA driver packages (Ubuntu/Debian)
+  apt:
+    name:
+      - nvidia-driver-{{ _final_driver_branch }}
+      - nvidia-utils-{{ _final_driver_branch }}
+      - nvidia-modprobe
+    state: present
+  when: ansible_os_family == "Debian"
+  tags: [driver]
+
+- name: Install NVIDIA driver packages (RHEL/CentOS)
+  yum:
+    name:
+      - nvidia-driver
+      - nvidia-driver-cuda
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: [driver]
+
+- name: Load NVIDIA kernel module
+  modprobe:
+    name: nvidia
+    state: present
   tags: [driver]
 
 # --- Reboot có điều kiện khi gặp mismatch (rc=18) ---
