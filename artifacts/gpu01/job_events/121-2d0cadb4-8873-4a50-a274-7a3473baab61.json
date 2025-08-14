@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "2d0cadb4-8873-4a50-a274-7a3473baab61", "counter": 121, "stdout": "                        specify common arguments to pass to sftp/scp/ssh (e.g.", "start_line": 120, "end_line": 121, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.879116+00:00"}

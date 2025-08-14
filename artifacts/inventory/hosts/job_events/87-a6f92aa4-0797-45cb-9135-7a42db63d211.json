@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "a6f92aa4-0797-45cb-9135-7a42db63d211", "counter": 87, "stdout": "                        set additional variables as key=value or YAML/JSON, if", "start_line": 86, "end_line": 87, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.142796+00:00"}

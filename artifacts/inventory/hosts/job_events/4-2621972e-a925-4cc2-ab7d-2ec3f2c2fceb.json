@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "2621972e-a925-4cc2-ab7d-2ec3f2c2fceb", "counter": 4, "stdout": "                        [--sftp-extra-args SFTP_EXTRA_ARGS]", "start_line": 3, "end_line": 4, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.127217+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "f9167a17-2ab1-494c-b227-03344b873224", "counter": 37, "stdout": "                        [-f FORKS] [-M MODULE_PATH] [--syntax-check]", "start_line": 36, "end_line": 37, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.132830+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "959a19c6-5cb0-4c62-8098-92f04a7979c6", "counter": 8, "stdout": "                        [--force-handlers] [--flush-cache] [-b]", "start_line": 7, "end_line": 8, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.857429+00:00"}

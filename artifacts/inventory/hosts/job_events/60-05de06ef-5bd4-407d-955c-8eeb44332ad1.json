@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "05de06ef-5bd4-407d-955c-8eeb44332ad1", "counter": 60, "stdout": "                        values. This argument may be specified multiple times.", "start_line": 59, "end_line": 60, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.138044+00:00"}

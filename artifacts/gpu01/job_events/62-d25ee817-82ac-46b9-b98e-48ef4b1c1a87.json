@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "d25ee817-82ac-46b9-b98e-48ef4b1c1a87", "counter": 62, "stdout": "                        start the playbook at the task matching this name", "start_line": 61, "end_line": 62, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.325332+00:00"}

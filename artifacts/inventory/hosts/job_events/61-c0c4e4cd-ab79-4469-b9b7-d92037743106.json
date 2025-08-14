@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "c0c4e4cd-ab79-4469-b9b7-d92037743106", "counter": 61, "stdout": "  --start-at-task START_AT_TASK", "start_line": 60, "end_line": 61, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.138211+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "041f8fdd-3f89-4198-bf8e-b3d0dc41031f", "counter": 93, "stdout": "  -h, --help            show this help message and exit", "start_line": 92, "end_line": 93, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.144082+00:00"}

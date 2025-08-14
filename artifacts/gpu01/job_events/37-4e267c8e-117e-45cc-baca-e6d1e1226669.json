@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "4e267c8e-117e-45cc-baca-e6d1e1226669", "counter": 37, "stdout": "                        [-f FORKS] [-M MODULE_PATH] [--syntax-check]", "start_line": 36, "end_line": 37, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.319262+00:00"}

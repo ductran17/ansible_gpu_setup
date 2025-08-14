@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "0a203bf4-ae4a-4ac5-aecc-3161f6a3c64e", "counter": 139, "stdout": "  --become-user BECOME_USER", "start_line": 138, "end_line": 139, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.340564+00:00"}

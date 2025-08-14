@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "da4be0dc-a4d9-48c9-938d-a706c5ec0562", "counter": 113, "stdout": "  --private-key PRIVATE_KEY_FILE, --key-file PRIVATE_KEY_FILE", "start_line": 112, "end_line": 113, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.877680+00:00"}

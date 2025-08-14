@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "3bd761ba-686f-4402-9a00-ca55709b8d50", "counter": 100, "stdout": "                        further limit selected hosts to an additional pattern", "start_line": 99, "end_line": 100, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.333005+00:00"}

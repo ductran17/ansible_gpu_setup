@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "02d77bc0-49d9-49f4-9015-84f964dade4f", "counter": 123, "stdout": "  --ssh-extra-args SSH_EXTRA_ARGS", "start_line": 122, "end_line": 123, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.337328+00:00"}

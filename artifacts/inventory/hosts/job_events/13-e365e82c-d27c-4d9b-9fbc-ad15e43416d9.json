@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "e365e82c-d27c-4d9b-9fbc-ad15e43416d9", "counter": 13, "stdout": "                        [-i INVENTORY] [--list-hosts] [-l SUBSET]", "start_line": 12, "end_line": 13, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.128654+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "3edda32e-ff60-45ad-a10f-df45f2304ae2", "counter": 11, "stdout": "                        [-K | --become-password-file BECOME_PASSWORD_FILE]", "start_line": 10, "end_line": 11, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.857996+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "3fbd1f65-cd55-4bc3-9619-28871471c385", "counter": 76, "stdout": "                        differences in those files; works great with --check", "start_line": 75, "end_line": 76, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.140861+00:00"}

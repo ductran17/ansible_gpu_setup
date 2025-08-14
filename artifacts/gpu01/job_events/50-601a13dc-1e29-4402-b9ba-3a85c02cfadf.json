@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "601a13dc-1e29-4402-b9ba-3a85c02cfadf", "counter": 50, "stdout": "  --connection-password-file CONNECTION_PASSWORD_FILE, --conn-pass-file CONNECTION_PASSWORD_FILE", "start_line": 49, "end_line": 50, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.866014+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "0bd30e2f-61cc-41c9-8b5e-68e68a086b75", "counter": 39, "stdout": "                        [--start-at-task START_AT_TASK]", "start_line": 38, "end_line": 39, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.319780+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "a52898d1-2ef9-4722-bf3a-369a2ba84e03", "counter": 26, "stdout": "                        [--scp-extra-args SCP_EXTRA_ARGS]", "start_line": 25, "end_line": 26, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.860850+00:00"}

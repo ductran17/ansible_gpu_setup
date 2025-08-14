@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "343b03da-8e64-4324-94e8-77df59a56003", "counter": 66, "stdout": "  --vault-id VAULT_IDS  the vault identity to use. This argument may be", "start_line": 65, "end_line": 66, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.326012+00:00"}

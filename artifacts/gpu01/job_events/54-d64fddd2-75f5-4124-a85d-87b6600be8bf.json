@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "d64fddd2-75f5-4124-a85d-87b6600be8bf", "counter": 54, "stdout": "  --list-hosts          outputs a list of matching hosts; does not execute", "start_line": 53, "end_line": 54, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.866735+00:00"}

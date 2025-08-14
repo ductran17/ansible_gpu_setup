@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "7ecb3755-4e36-4ca2-8c4f-d81b9912b05c", "counter": 80, "stdout": "                        ask for privilege escalation password", "start_line": 79, "end_line": 80, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.328646+00:00"}

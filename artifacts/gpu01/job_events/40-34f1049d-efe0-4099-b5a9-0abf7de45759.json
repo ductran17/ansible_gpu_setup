@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "34f1049d-efe0-4099-b5a9-0abf7de45759", "counter": 40, "stdout": "                        playbook [playbook ...]", "start_line": 39, "end_line": 40, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.863271+00:00"}

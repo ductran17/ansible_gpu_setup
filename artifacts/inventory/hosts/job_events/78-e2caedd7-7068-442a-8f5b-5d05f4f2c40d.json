@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "e2caedd7-7068-442a-8f5b-5d05f4f2c40d", "counter": 78, "stdout": "                        ask for vault password", "start_line": 77, "end_line": 78, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.141210+00:00"}

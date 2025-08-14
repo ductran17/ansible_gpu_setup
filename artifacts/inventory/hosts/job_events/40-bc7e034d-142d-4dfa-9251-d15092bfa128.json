@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "bc7e034d-142d-4dfa-9251-d15092bfa128", "counter": 40, "stdout": "                        playbook [playbook ...]", "start_line": 39, "end_line": 40, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.133350+00:00"}

@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "8f62d2fb-4a21-48dd-ada3-73776200f447", "counter": 130, "stdout": "  -u REMOTE_USER, --user REMOTE_USER", "start_line": 129, "end_line": 130, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.339021+00:00"}

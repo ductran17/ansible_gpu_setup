@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "1ce0a4f6-34c3-485d-b6c2-570b34e93663", "counter": 100, "stdout": "                        further limit selected hosts to an additional pattern", "start_line": 99, "end_line": 100, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.145464+00:00"}

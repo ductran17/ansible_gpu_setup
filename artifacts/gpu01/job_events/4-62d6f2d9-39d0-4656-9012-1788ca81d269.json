@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "62d6f2d9-39d0-4656-9012-1788ca81d269", "counter": 4, "stdout": "                        [--sftp-extra-args SFTP_EXTRA_ARGS]", "start_line": 3, "end_line": 4, "runner_ident": "gpu01", "created": "2025-08-13T23:24:36.313272+00:00"}

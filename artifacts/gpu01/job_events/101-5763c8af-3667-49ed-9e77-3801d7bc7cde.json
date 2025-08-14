@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "5763c8af-3667-49ed-9e77-3801d7bc7cde", "counter": 101, "stdout": "  -t TAGS, --tags TAGS  only run plays and tasks tagged with these values.", "start_line": 100, "end_line": 101, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.875635+00:00"}

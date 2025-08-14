@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "b1164420-e00f-4958-9af0-0481a854e85b", "counter": 30, "stdout": "                        [--become-method BECOME_METHOD]", "start_line": 29, "end_line": 30, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.131707+00:00"}

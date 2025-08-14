@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "dc163acd-5100-4bd1-9f2d-c9de42396be9", "counter": 30, "stdout": "                        [--become-method BECOME_METHOD]", "start_line": 29, "end_line": 30, "runner_ident": "gpu01", "created": "2025-08-13T23:33:37.861540+00:00"}

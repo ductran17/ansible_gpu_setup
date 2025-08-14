@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "97b0df39-f8cc-4d76-a79c-6805e678af29", "counter": 98, "stdout": "  -k, --ask-pass        ask for connection password", "start_line": 97, "end_line": 98, "runner_ident": "inventory/hosts", "created": "2025-08-13T23:32:07.145070+00:00"}
