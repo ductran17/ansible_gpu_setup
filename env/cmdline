@@ -1,2 +1,0 @@
-# ví dụ chỉ chạy toolkit + cuDNN + verify khi CI không có GPU
---tags toolkit,cudnn,verify
